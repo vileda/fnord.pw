@@ -5,12 +5,9 @@ def read_files_to_mem
   paths = Dir.glob('storage/**/*.txt')
   hashes = paths.map { |p| p = p.gsub('storage/','').gsub('/','') }
   map = {}
-  paths.each_with_index { |p,i|
-    File.open(p,'r') { |f| map[hashes[i][0..5]] = f.readline }
-  }
+  paths.each_with_index { |p,i| File.open(p,'r') { |f| map[hashes[i][0..5]] = f.readline } }
   map
 end
-
 
 file_map = read_files_to_mem()
 
