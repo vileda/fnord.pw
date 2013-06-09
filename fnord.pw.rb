@@ -17,6 +17,7 @@ end
 
 post '/' do
   url = params[:url]
+  url = "http://#{url}" unless url =~ /^http:\/\//
   url_hash = Digest::SHA256.new.hexdigest(url)
   hash_sub = url_hash[0..5]
   if file_map[hash_sub].nil?
