@@ -21,18 +21,23 @@ end
 post '/' do
   url = params[:url]
   url_hash = Digest::SHA256.new.hexdigest(url)
-  path = hash_to_path(url_hash)+'.txt'
-  File.open(path,'w+') { |f| f.write(url); f.close } 
-  file_map[url_hash[0..5]] = url
-  redirect '/'+url_hash[0..5]+'/show'
+  hash_sub = url_hash[0..5]
+  if file_map[hash_sub].nil?
+    path = hash_to_path(url_hash)+'.txt'
+    File.open(path,'w+') { |f| f.write(url); f.close } 
+    file_map[hash_sub] = url
+  end
+
+  redirect '/'+hash_sub+'/show'
 end
 
-get '/:hash' do
-  redirect file_map[params[:hash]]
+get %r{/([0-9a-f]{6})$} do |hash|
+  redirect file_map[hash]
 end
 
-get '/:hash/show' do
-  @url = file_map[params[:hash]]
+get %r{/([0-9a-f]{6})/show} do |hash|
+  @url = file_map[hash]
+  @hash = hash
   erb :show
 end
 
